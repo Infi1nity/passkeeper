@@ -3,7 +3,7 @@ from datetime import datetime
 
 class ServiceBase(BaseModel):
     name: str
-    description: str
+    description: str | None = None
 
 class ServiceCreate(ServiceBase):
     pass
@@ -18,7 +18,7 @@ class ServiceResponse(ServiceBase):
 class PasswordBase(BaseModel):
     username: str
     password: str
-    notes: str
+    notes: str | None = None
     service_id: int
 
 class PasswordCreate(PasswordBase):
@@ -27,7 +27,7 @@ class PasswordCreate(PasswordBase):
 class PasswordResponse(PasswordBase):
     id: int
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 

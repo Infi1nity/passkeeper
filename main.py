@@ -1,13 +1,31 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from typing import List
 from database import get_db, engine, Base, SessionLocal
 from schemas import ServiceResponse, ServiceCreate, ServiceWithPasswords, PasswordCreate, PasswordResponse
 from sqlalchemy.orm import Session
 from models import Service, Password
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 Base.metadata.create_all(bind=engine)
+
+@app.get("/", response_class=HTMLResponse)
+def main_page(request: Request):
+    return templates.TemplateResponse(
+        "base.html",
+        {"request": request, "title": "Главная", 'user': 'Володя'}
+    )
+
+@app.get("/{user}", response_class=HTMLResponse)
+def main_page(user: str, request: Request):
+    return templates.TemplateResponse(
+        "base2.html",
+        {"request": request, "title": "Главная", 'user': user}
+    )
+
 
 @app.post('/services/', response_model=ServiceResponse)
 def create_service(service: ServiceCreate, db: Session = Depends(get_db)):
